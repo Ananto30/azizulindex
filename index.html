@@ -1,0 +1,2694 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Halal Healthy Tech Index</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <style>
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --bg-tertiary: #252525;
+            --text-primary: #ffffff;
+            --text-secondary: #b3b3b3;
+            --text-muted: #808080;
+            --accent-green: #00d084;
+            --accent-red: #ff4757;
+            --accent-blue: #3742fa;
+            --accent-yellow: #ffa502;
+            --border-color: #333333;
+            --chart-bg: #1e1e1e;
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 2px;
+            background: var(--gradient-primary);
+            border-radius: 1px;
+        }
+
+        .header h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 300;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .header .subtitle {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+            letter-spacing: 0.05em;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .metrics-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .holdings-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+        }
+
+        .holdings-subtitle {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .holdings-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .holding-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .holding-item:hover {
+            background: var(--chart-bg);
+            border-color: var(--accent-blue);
+        }
+
+        .holding-info {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .holding-symbol {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            font-family: 'SF Mono', monospace;
+        }
+
+        .holding-name {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.1rem;
+        }
+
+        .holding-weight {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--accent-green);
+            font-family: 'SF Mono', monospace;
+            min-width: 60px;
+            text-align: right;
+        }
+
+        .rebalance-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .status-indicator.recent {
+            background-color: var(--accent-green);
+        }
+
+        .status-indicator.due {
+            background-color: var(--accent-yellow);
+        }
+
+        .status-indicator.overdue {
+            background-color: var(--accent-red);
+        }
+
+        .chart-container {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* .chart-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+            border-radius: 12px 12px 0 0;
+        } */
+
+        .chart-title {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .chart-title::before {
+            content: '📈';
+            font-size: 1rem;
+        }
+
+        #candlestickChart {
+            height: 500px;
+            width: 100%;
+        }
+
+        .metrics-sidebar {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .metric-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .metric-card:hover {
+            border-color: var(--accent-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(55, 66, 250, 0.15);
+        }
+
+        .metric-card.span-2 {
+            grid-column: span 2;
+        }
+
+        @media (max-width: 767px) {
+            .metric-card.span-2 {
+                grid-column: span 1;
+            }
+        }
+
+        /* .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+            border-radius: 12px 12px 0 0;
+        } */
+
+        .metric-header {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .performance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+        }
+
+        .performance-item {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .performance-item:hover {
+            background: var(--chart-bg);
+        }
+
+        .performance-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.3rem;
+        }
+
+        .performance-value {
+            font-size: 1.2rem;
+            font-weight: 600;
+            font-family: 'SF Mono', monospace;
+        }
+
+        .performance-value.positive {
+            color: var(--accent-green);
+        }
+
+        .performance-value.negative {
+            color: var(--accent-red);
+        }
+
+        .performance-value.neutral {
+            color: var(--text-secondary);
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.9rem;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .info-value {
+            font-weight: 600;
+            font-family: 'SF Mono', monospace;
+            text-align: right;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 2rem 0;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+            color: var(--text-secondary);
+        }
+
+        .data-timestamp {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            background: var(--bg-tertiary);
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .performance-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .metrics-sidebar {
+                gap: 1rem;
+            }
+
+            .metric-card {
+                padding: 1rem;
+            }
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-blue);
+        }
+
+        /* Trend Analysis Styles */
+        .trend-analysis-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .trend-analysis-container {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+        }
+
+        .trend-card {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .trend-card:hover {
+            border-color: var(--accent-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        .trend-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--gradient-primary);
+        }
+
+        .trend-card.peak::before {
+            background: linear-gradient(135deg, var(--accent-green) 0%, #00a86b 100%);
+        }
+
+        .trend-card.valley::before {
+            background: linear-gradient(135deg, var(--accent-red) 0%, #ff3742 100%);
+        }
+
+        .trend-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .trend-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .trend-icon {
+            font-size: 1.2rem;
+        }
+
+        .trend-badge {
+            font-size: 0.7rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 20px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .trend-badge.peak {
+            background: rgba(0, 208, 132, 0.2);
+            color: var(--accent-green);
+            border: 1px solid var(--accent-green);
+        }
+
+        .trend-badge.valley {
+            background: rgba(255, 71, 87, 0.2);
+            color: var(--accent-red);
+            border: 1px solid var(--accent-red);
+        }
+
+        .trend-price {
+            font-size: 1.8rem;
+            font-weight: 700;
+            font-family: 'SF Mono', monospace;
+            margin-bottom: 0.5rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .trend-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .trend-detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+        }
+
+        .trend-detail-label {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .trend-detail-value {
+            font-weight: 600;
+            font-family: 'SF Mono', monospace;
+        }
+
+        .trend-percentage {
+            font-size: 1.1rem;
+            font-weight: 700;
+            font-family: 'SF Mono', monospace;
+        }
+
+        .trend-percentage.positive {
+            color: var(--accent-green);
+        }
+
+        .trend-percentage.negative {
+            color: var(--accent-red);
+        }
+
+        .trend-current-status {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--chart-bg) 100%);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .trend-status-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .trend-status-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            font-family: 'SF Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .trend-status-value.bullish {
+            color: var(--accent-green);
+        }
+
+        .trend-status-value.bearish {
+            color: var(--accent-red);
+        }
+
+        .trend-status-value.neutral {
+            color: var(--accent-yellow);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header class="header">
+            <h4>Halal Healthy Tech Index</h4>
+            <div class="subtitle">Ethical Technology Investment Tracking</div>
+            <div class="data-timestamp" id="lastUpdate">Last Update: Loading...</div>
+        </header>
+
+        <div class="main-grid">
+            <!-- Chart Section -->
+            <div class="chart-container">
+                <h2 class="chart-title">Price Movement</h2>
+                <div id="candlestickChart"></div>
+            </div>
+        </div>
+
+        <!-- Metrics Section -->
+        <div class="metrics-grid">
+            <!-- Performance Metrics -->
+            <div class="metric-card span-2">
+                <h3 class="metric-header">📊 Performance</h3>
+                <div class="performance-grid" id="performanceGrid">
+                    <!-- Performance items will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Price Levels -->
+            <div class="metric-card">
+                <h3 class="metric-header">💰 Price Levels</h3>
+                <div id="priceLevels">
+                    <!-- Price level info will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Holdings Distribution -->
+            <div class="metric-card span-2">
+                <h3 class="metric-header">🏢 Top Holdings</h3>
+                <div class="holdings-subtitle" id="holdingsSubtitle">
+                    <!-- Holdings subtitle will be populated by JavaScript -->
+                </div>
+                <div class="holdings-list" id="holdingsList">
+                    <!-- Holdings will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Portfolio Info -->
+            <div class="metric-card">
+                <h3 class="metric-header">📅 Portfolio Management</h3>
+                <div id="portfolioInfo">
+                    <!-- Portfolio management info will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Risk Metrics -->
+            <div class="metric-card">
+                <h3 class="metric-header">⚠️ Risk Metrics</h3>
+                <div id="riskMetrics">
+                    <!-- Risk metrics will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Trend Analysis -->
+            <div class="metric-card span-2">
+                <h3 class="metric-header">📈 Trend Analysis</h3>
+                <div id="trendAnalysis" class="trend-analysis-container">
+                    <!-- Trend analysis will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p>Halal Healthy Tech Index Portfolio Dashboard</p>
+            <p>Data provided for investment analysis • Built with modern web technologies</p>
+        </footer>
+    </div>
+
+    <script>
+        // Sample data structure - replace this with your actual data or API call
+        const sampleData = {
+        "indexName": "Halal Healthy Tech",
+        "lastUpdate": "2025-07-07T08:52:12.367568+00:00",
+        "currentPrice": 210.25620116240967,
+        "priceData": [
+                {
+                        "x": "2024-10-16",
+                        "o": 218.39550249399483,
+                        "h": 220.06377490967327,
+                        "l": 214.11175472213063,
+                        "c": 217.6181073077854
+                },
+                {
+                        "x": "2024-10-17",
+                        "o": 224.06966597582428,
+                        "h": 226.2240074458483,
+                        "l": 219.94292892307453,
+                        "c": 220.67921601385865
+                },
+                {
+                        "x": "2024-10-18",
+                        "o": 223.975888341918,
+                        "h": 224.8876501584737,
+                        "l": 218.8453500026378,
+                        "c": 220.3811162243024
+                },
+                {
+                        "x": "2024-10-21",
+                        "o": 218.97052879138928,
+                        "h": 220.9851979809331,
+                        "l": 211.25490330432865,
+                        "c": 216.18018908331825
+                },
+                {
+                        "x": "2024-10-22",
+                        "o": 214.88162587632644,
+                        "h": 216.4451316126421,
+                        "l": 212.5851368260116,
+                        "c": 214.5999432799551
+                },
+                {
+                        "x": "2024-10-23",
+                        "o": 213.1803218272047,
+                        "h": 217.4293393111724,
+                        "l": 210.1145359001074,
+                        "c": 213.58252581700245
+                },
+                {
+                        "x": "2024-10-24",
+                        "o": 215.5422640968781,
+                        "h": 217.89626135044057,
+                        "l": 214.00539488477483,
+                        "c": 216.49838094036596
+                },
+                {
+                        "x": "2024-10-25",
+                        "o": 218.00754074685773,
+                        "h": 222.47253238247544,
+                        "l": 216.7057292762814,
+                        "c": 217.10710767918565
+                },
+                {
+                        "x": "2024-10-28",
+                        "o": 217.53376294942035,
+                        "h": 219.5201165633109,
+                        "l": 214.06198883828637,
+                        "c": 215.007942021727
+                },
+                {
+                        "x": "2024-10-29",
+                        "o": 215.7037784655485,
+                        "h": 223.82988479980293,
+                        "l": 214.27564385948435,
+                        "c": 222.6237664541852
+                },
+                {
+                        "x": "2024-10-30",
+                        "o": 217.74146897086328,
+                        "h": 221.32014903588848,
+                        "l": 215.6838077552325,
+                        "c": 218.12405396964957
+                },
+                {
+                        "x": "2024-10-31",
+                        "o": 203.9080220180963,
+                        "h": 204.6225939912413,
+                        "l": 187.9614592298589,
+                        "c": 192.2878443563769
+                },
+                {
+                        "x": "2024-11-01",
+                        "o": 193.367250669032,
+                        "h": 197.84659285146225,
+                        "l": 191.1307060484856,
+                        "c": 192.35556516682448
+                },
+                {
+                        "x": "2024-11-04",
+                        "o": 192.7090154248781,
+                        "h": 197.94374481886703,
+                        "l": 190.21658865985145,
+                        "c": 193.66943912221544
+                },
+                {
+                        "x": "2024-11-05",
+                        "o": 194.5212555604564,
+                        "h": 197.8532599635923,
+                        "l": 191.7095071057515,
+                        "c": 195.74728844796024
+                },
+                {
+                        "x": "2024-11-06",
+                        "o": 199.3448962836715,
+                        "h": 202.8727560960617,
+                        "l": 196.51228170993792,
+                        "c": 202.2749327238139
+                },
+                {
+                        "x": "2024-11-07",
+                        "o": 203.95670874078428,
+                        "h": 206.22223672393417,
+                        "l": 199.04884712431056,
+                        "c": 202.668314774516
+                },
+                {
+                        "x": "2024-11-08",
+                        "o": 201.0536517935085,
+                        "h": 204.23473274232344,
+                        "l": 197.60966173855635,
+                        "c": 200.288652686982
+                },
+                {
+                        "x": "2024-11-11",
+                        "o": 182.2001358172413,
+                        "h": 185.68289646400908,
+                        "l": 171.20699891463886,
+                        "c": 182.8844931469023
+                },
+                {
+                        "x": "2024-11-12",
+                        "o": 184.81391407504316,
+                        "h": 189.50395919325288,
+                        "l": 178.16378746825114,
+                        "c": 181.643446746923
+                },
+                {
+                        "x": "2024-11-13",
+                        "o": 179.97680015033978,
+                        "h": 182.15661122435068,
+                        "l": 173.125449610585,
+                        "c": 173.8664478063695
+                },
+                {
+                        "x": "2024-11-14",
+                        "o": 174.7969201421495,
+                        "h": 176.3282091363454,
+                        "l": 168.56751908406366,
+                        "c": 170.00983354276997
+                },
+                {
+                        "x": "2024-11-15",
+                        "o": 167.4667466174821,
+                        "h": 171.6130816444608,
+                        "l": 164.4024639526632,
+                        "c": 167.37999162961253
+                },
+                {
+                        "x": "2024-11-18",
+                        "o": 167.3493891959172,
+                        "h": 170.71043699469143,
+                        "l": 164.26059288158626,
+                        "c": 169.64247957200155
+                },
+                {
+                        "x": "2024-11-19",
+                        "o": 170.05642822704826,
+                        "h": 173.23684869644498,
+                        "l": 167.7040646584444,
+                        "c": 171.67185981759664
+                },
+                {
+                        "x": "2024-11-20",
+                        "o": 171.32079180116128,
+                        "h": 172.41909161808763,
+                        "l": 164.14371050286402,
+                        "c": 167.69275061038195
+                },
+                {
+                        "x": "2024-11-21",
+                        "o": 170.64920206075934,
+                        "h": 173.57865639294712,
+                        "l": 165.62504191787897,
+                        "c": 171.7051509752047
+                },
+                {
+                        "x": "2024-11-22",
+                        "o": 170.89675265561536,
+                        "h": 175.55301219053757,
+                        "l": 169.24161333700496,
+                        "c": 172.48974008528316
+                },
+                {
+                        "x": "2024-11-25",
+                        "o": 174.9162569268218,
+                        "h": 178.62077251919126,
+                        "l": 172.44124167076387,
+                        "c": 175.19827237630548
+                },
+                {
+                        "x": "2024-11-26",
+                        "o": 175.1210797396396,
+                        "h": 176.40044121656098,
+                        "l": 169.0862737825375,
+                        "c": 170.73310365552484
+                },
+                {
+                        "x": "2024-11-27",
+                        "o": 170.65708556089706,
+                        "h": 171.28400683413534,
+                        "l": 164.0964502585353,
+                        "c": 167.11840994069829
+                },
+                {
+                        "x": "2024-11-29",
+                        "o": 168.20947418529738,
+                        "h": 170.52323224949666,
+                        "l": 166.78925673931093,
+                        "c": 168.88525080073643
+                },
+                {
+                        "x": "2024-12-02",
+                        "o": 169.41828848314137,
+                        "h": 174.75369366651745,
+                        "l": 168.53505823214013,
+                        "c": 172.07890827545913
+                },
+                {
+                        "x": "2024-12-03",
+                        "o": 170.72718009044135,
+                        "h": 174.8621123413962,
+                        "l": 169.7459346476767,
+                        "c": 173.24534128942412
+                },
+                {
+                        "x": "2024-12-04",
+                        "o": 175.42525079599594,
+                        "h": 178.02450709428987,
+                        "l": 172.8627868062546,
+                        "c": 175.34113022082818
+                },
+                {
+                        "x": "2024-12-05",
+                        "o": 176.13815442496488,
+                        "h": 177.08058061977647,
+                        "l": 172.06599498154998,
+                        "c": 173.44331205843895
+                },
+                {
+                        "x": "2024-12-06",
+                        "o": 174.01438069029163,
+                        "h": 178.83137103992348,
+                        "l": 172.5851731786547,
+                        "c": 176.87015453847
+                },
+                {
+                        "x": "2024-12-09",
+                        "o": 176.8491837655832,
+                        "h": 181.17445240672564,
+                        "l": 175.02991999739984,
+                        "c": 178.99196557992738
+                },
+                {
+                        "x": "2024-12-10",
+                        "o": 178.89255179743216,
+                        "h": 180.25169642153116,
+                        "l": 172.037183144151,
+                        "c": 173.53066461120775
+                },
+                {
+                        "x": "2024-12-11",
+                        "o": 177.8593112551937,
+                        "h": 182.11659055910172,
+                        "l": 175.13909521899893,
+                        "c": 180.8016264002152
+                },
+                {
+                        "x": "2024-12-12",
+                        "o": 178.01350633072764,
+                        "h": 180.85262232822785,
+                        "l": 173.95620237139718,
+                        "c": 177.02808014895862
+                },
+                {
+                        "x": "2024-12-13",
+                        "o": 184.35815482257505,
+                        "h": 187.85143670945007,
+                        "l": 179.45398171242448,
+                        "c": 183.2189697623232
+                },
+                {
+                        "x": "2024-12-16",
+                        "o": 184.1378609840454,
+                        "h": 193.2097085553202,
+                        "l": 182.09587353554693,
+                        "c": 190.53218810914575
+                },
+                {
+                        "x": "2024-12-17",
+                        "o": 188.0113449450462,
+                        "h": 191.7015551429463,
+                        "l": 185.97458442827596,
+                        "c": 188.69930813127692
+                },
+                {
+                        "x": "2024-12-18",
+                        "o": 189.9024412253974,
+                        "h": 192.57978488549537,
+                        "l": 177.83387631184644,
+                        "c": 179.60827047707727
+                },
+                {
+                        "x": "2024-12-19",
+                        "o": 180.9774116753961,
+                        "h": 182.2193161830266,
+                        "l": 174.20818806670093,
+                        "c": 175.74592655938253
+                },
+                {
+                        "x": "2024-12-20",
+                        "o": 174.9814038445549,
+                        "h": 181.2756331449533,
+                        "l": 173.43327532068747,
+                        "c": 178.09049211855034
+                },
+                {
+                        "x": "2024-12-23",
+                        "o": 179.1229776249935,
+                        "h": 184.736205392084,
+                        "l": 177.85199555311496,
+                        "c": 183.98648621144395
+                },
+                {
+                        "x": "2024-12-24",
+                        "o": 185.03653275706463,
+                        "h": 186.76216418894376,
+                        "l": 183.1509282598424,
+                        "c": 185.7123144968871
+                },
+                {
+                        "x": "2024-12-26",
+                        "o": 184.73856902038813,
+                        "h": 188.1425361388729,
+                        "l": 183.62520289728613,
+                        "c": 186.6160959389354
+                },
+                {
+                        "x": "2024-12-27",
+                        "o": 185.65786671723487,
+                        "h": 186.7018977856627,
+                        "l": 181.09199294877695,
+                        "c": 184.06339462897975
+                },
+                {
+                        "x": "2024-12-30",
+                        "o": 181.19455578357835,
+                        "h": 183.30929933712972,
+                        "l": 178.0118289699445,
+                        "c": 181.14331843814884
+                },
+                {
+                        "x": "2024-12-31",
+                        "o": 181.4043058103455,
+                        "h": 183.48798294110628,
+                        "l": 177.58668422036607,
+                        "c": 178.9436960160479
+                },
+                {
+                        "x": "2025-01-02",
+                        "o": 166.25274144834313,
+                        "h": 168.96998972871648,
+                        "l": 163.14263150602898,
+                        "c": 165.1035511760204
+                },
+                {
+                        "x": "2025-01-03",
+                        "o": 166.53583687531255,
+                        "h": 171.41557372416685,
+                        "l": 165.3464309760162,
+                        "c": 169.87339440462566
+                },
+                {
+                        "x": "2025-01-06",
+                        "o": 174.0127497367508,
+                        "h": 177.95853836082205,
+                        "l": 172.01581900661657,
+                        "c": 174.30914183496878
+                },
+                {
+                        "x": "2025-01-07",
+                        "o": 177.26920619029713,
+                        "h": 178.06950699553408,
+                        "l": 169.9907743726139,
+                        "c": 170.98230176816946
+                },
+                {
+                        "x": "2025-01-08",
+                        "o": 170.60871508398665,
+                        "h": 173.46157338988567,
+                        "l": 167.36349818139996,
+                        "c": 170.3654638777106
+                },
+                {
+                        "x": "2025-01-10",
+                        "o": 167.96153375113246,
+                        "h": 169.65272420591862,
+                        "l": 162.8083143360029,
+                        "c": 165.67187854945834
+                },
+                {
+                        "x": "2025-01-13",
+                        "o": 161.97801814119342,
+                        "h": 165.47454143469426,
+                        "l": 160.147172812104,
+                        "c": 163.75646456544348
+                },
+                {
+                        "x": "2025-01-14",
+                        "o": 165.54932372685164,
+                        "h": 167.26763522846016,
+                        "l": 162.09766080655234,
+                        "c": 164.558341300086
+                },
+                {
+                        "x": "2025-01-15",
+                        "o": 168.2864686449309,
+                        "h": 170.3934826663643,
+                        "l": 166.12604275354164,
+                        "c": 168.51391634851137
+                },
+                {
+                        "x": "2025-01-16",
+                        "o": 171.4205308668979,
+                        "h": 172.82884308401202,
+                        "l": 167.0684477548956,
+                        "c": 168.1109054751574
+                },
+                {
+                        "x": "2025-01-17",
+                        "o": 171.40861830734457,
+                        "h": 174.50882213391986,
+                        "l": 169.26220013965775,
+                        "c": 173.08079401933466
+                },
+                {
+                        "x": "2025-01-21",
+                        "o": 175.38081086826298,
+                        "h": 179.2322931408272,
+                        "l": 173.4328962240073,
+                        "c": 176.7413688047428
+                },
+                {
+                        "x": "2025-01-22",
+                        "o": 180.93571710033103,
+                        "h": 186.6316407064063,
+                        "l": 178.26861599178952,
+                        "c": 183.90958101248745
+                },
+                {
+                        "x": "2025-01-23",
+                        "o": 180.9424765874656,
+                        "h": 184.76650918342105,
+                        "l": 179.50735164559893,
+                        "c": 184.2758918226621
+                },
+                {
+                        "x": "2025-01-24",
+                        "o": 185.5583495472669,
+                        "h": 186.89261907027335,
+                        "l": 180.13182018146028,
+                        "c": 181.803192661248
+                },
+                {
+                        "x": "2025-01-27",
+                        "o": 169.35856771560043,
+                        "h": 172.71177668908467,
+                        "l": 158.1000999374752,
+                        "c": 161.1337724492522
+                },
+                {
+                        "x": "2025-01-28",
+                        "o": 163.8489093622341,
+                        "h": 168.10135985832292,
+                        "l": 158.43715449734634,
+                        "c": 166.17663958479685
+                },
+                {
+                        "x": "2025-01-29",
+                        "o": 166.15419866356626,
+                        "h": 167.48040422954804,
+                        "l": 162.30472222829127,
+                        "c": 165.19376705918285
+                },
+                {
+                        "x": "2025-01-30",
+                        "o": 168.2726450227451,
+                        "h": 171.72633861023706,
+                        "l": 166.140653258243,
+                        "c": 169.69327006727502
+                },
+                {
+                        "x": "2025-01-31",
+                        "o": 170.694784782749,
+                        "h": 175.0328988444646,
+                        "l": 167.8221733425399,
+                        "c": 169.42290421029904
+                },
+                {
+                        "x": "2025-02-03",
+                        "o": 164.23242293573847,
+                        "h": 169.876030094807,
+                        "l": 163.01159250084612,
+                        "c": 167.13162257873577
+                },
+                {
+                        "x": "2025-02-04",
+                        "o": 167.31096983874016,
+                        "h": 172.7686449883205,
+                        "l": 166.26803332146875,
+                        "c": 171.67126292780682
+                },
+                {
+                        "x": "2025-02-05",
+                        "o": 173.48119317050438,
+                        "h": 177.06320301289304,
+                        "l": 171.43354048184548,
+                        "c": 174.7032702631845
+                },
+                {
+                        "x": "2025-02-06",
+                        "o": 175.3721145733654,
+                        "h": 177.9882006138106,
+                        "l": 172.4463857622464,
+                        "c": 176.32790259369636
+                },
+                {
+                        "x": "2025-02-07",
+                        "o": 180.22467480646424,
+                        "h": 184.90499588658983,
+                        "l": 175.8094299628439,
+                        "c": 181.4258076852177
+                },
+                {
+                        "x": "2025-02-10",
+                        "o": 182.1994596629891,
+                        "h": 185.95520030774523,
+                        "l": 179.913239502663,
+                        "c": 183.6337504859493
+                },
+                {
+                        "x": "2025-02-11",
+                        "o": 181.2178815600321,
+                        "h": 185.09352993571764,
+                        "l": 178.75467425423258,
+                        "c": 181.31884809142235
+                },
+                {
+                        "x": "2025-02-12",
+                        "o": 178.40600107738445,
+                        "h": 182.41482873832183,
+                        "l": 176.50670046664047,
+                        "c": 181.199721053542
+                },
+                {
+                        "x": "2025-02-13",
+                        "o": 182.93392679598588,
+                        "h": 186.16839471748744,
+                        "l": 180.10678852551095,
+                        "c": 184.5343470062436
+                },
+                {
+                        "x": "2025-02-14",
+                        "o": 184.3887658754742,
+                        "h": 186.71617437944917,
+                        "l": 181.0619804276205,
+                        "c": 184.0628329976832
+                },
+                {
+                        "x": "2025-02-18",
+                        "o": 186.01354468218068,
+                        "h": 189.3028339018811,
+                        "l": 182.65961788012908,
+                        "c": 185.83484601011403
+                },
+                {
+                        "x": "2025-02-19",
+                        "o": 185.7593816178684,
+                        "h": 189.03732792054427,
+                        "l": 182.42850710997243,
+                        "c": 185.6090705167821
+                },
+                {
+                        "x": "2025-02-20",
+                        "o": 185.5606298090814,
+                        "h": 187.24486442733573,
+                        "l": 179.8553955893181,
+                        "c": 183.795518466917
+                },
+                {
+                        "x": "2025-02-21",
+                        "o": 183.40814969194025,
+                        "h": 184.6709593978648,
+                        "l": 175.24272592892518,
+                        "c": 176.47864415280367
+                },
+                {
+                        "x": "2025-02-24",
+                        "o": 176.97919114285054,
+                        "h": 178.27723158777604,
+                        "l": 169.3023660649568,
+                        "c": 171.88735043200236
+                },
+                {
+                        "x": "2025-02-25",
+                        "o": 171.41854052536314,
+                        "h": 172.53435121644648,
+                        "l": 166.3436553538397,
+                        "c": 168.8779096916936
+                },
+                {
+                        "x": "2025-02-26",
+                        "o": 172.6966572505968,
+                        "h": 176.80567800708775,
+                        "l": 170.7921437062626,
+                        "c": 173.9477517510889
+                },
+                {
+                        "x": "2025-02-27",
+                        "o": 175.39823019626778,
+                        "h": 176.3530938765062,
+                        "l": 160.89009495285887,
+                        "c": 161.24861834704308
+                },
+                {
+                        "x": "2025-02-28",
+                        "o": 160.0840209233276,
+                        "h": 165.38082323095128,
+                        "l": 157.70224312561368,
+                        "c": 163.37591869497305
+                },
+                {
+                        "x": "2025-03-03",
+                        "o": 165.44449608558952,
+                        "h": 165.94030758317984,
+                        "l": 153.31358726781937,
+                        "c": 154.64935779823236
+                },
+                {
+                        "x": "2025-03-04",
+                        "o": 153.47138864552235,
+                        "h": 160.30298835415488,
+                        "l": 148.8655756594278,
+                        "c": 155.9753863355794
+                },
+                {
+                        "x": "2025-03-05",
+                        "o": 157.05415490591065,
+                        "h": 161.4206226462739,
+                        "l": 154.43616212505802,
+                        "c": 160.390191910199
+                },
+                {
+                        "x": "2025-03-06",
+                        "o": 154.75684151274393,
+                        "h": 158.85040260539563,
+                        "l": 148.7404801797851,
+                        "c": 149.91107617485787
+                },
+                {
+                        "x": "2025-03-07",
+                        "o": 151.48810072196878,
+                        "h": 157.26840390904928,
+                        "l": 147.49850243469007,
+                        "c": 155.41177964992778
+                },
+                {
+                        "x": "2025-03-10",
+                        "o": 151.38490693527697,
+                        "h": 154.31527307935676,
+                        "l": 146.02274845562232,
+                        "c": 148.65948275369925
+                },
+                {
+                        "x": "2025-03-11",
+                        "o": 149.65057333228572,
+                        "h": 154.2194061693418,
+                        "l": 145.49077149497586,
+                        "c": 150.4088516104071
+                },
+                {
+                        "x": "2025-03-12",
+                        "o": 154.81549101856433,
+                        "h": 158.59637181666164,
+                        "l": 152.85210125857537,
+                        "c": 155.30881331729196
+                },
+                {
+                        "x": "2025-03-13",
+                        "o": 154.03602305444684,
+                        "h": 156.54023524380412,
+                        "l": 150.2568564670011,
+                        "c": 151.98488922989955
+                },
+                {
+                        "x": "2025-03-14",
+                        "o": 156.25306161459392,
+                        "h": 160.96939617854113,
+                        "l": 155.20889373334094,
+                        "c": 160.04332067251335
+                },
+                {
+                        "x": "2025-03-17",
+                        "o": 159.31378851129065,
+                        "h": 165.92004336102613,
+                        "l": 158.19296686396166,
+                        "c": 164.03368402134333
+                },
+                {
+                        "x": "2025-03-18",
+                        "o": 161.98571874598514,
+                        "h": 163.67386826638938,
+                        "l": 158.1041209533618,
+                        "c": 160.04963303782586
+                },
+                {
+                        "x": "2025-03-19",
+                        "o": 160.77275475900188,
+                        "h": 166.28569206946233,
+                        "l": 159.01640321229814,
+                        "c": 163.25197586634943
+                },
+                {
+                        "x": "2025-03-20",
+                        "o": 161.24699910282143,
+                        "h": 166.5433962746126,
+                        "l": 158.74280072038496,
+                        "c": 160.43022770157717
+                },
+                {
+                        "x": "2025-03-21",
+                        "o": 157.1128143839728,
+                        "h": 159.554076365601,
+                        "l": 154.03969818047435,
+                        "c": 157.96675721232054
+                },
+                {
+                        "x": "2025-03-24",
+                        "o": 161.4165161088365,
+                        "h": 166.0095656881742,
+                        "l": 159.18102450125275,
+                        "c": 163.29987569216985
+                },
+                {
+                        "x": "2025-03-25",
+                        "o": 163.0075781151441,
+                        "h": 165.2274161882475,
+                        "l": 161.2009118789136,
+                        "c": 163.37142270537385
+                },
+                {
+                        "x": "2025-03-26",
+                        "o": 162.4883585913204,
+                        "h": 163.10641062588888,
+                        "l": 154.368701584322,
+                        "c": 156.0823641883479
+                },
+                {
+                        "x": "2025-03-27",
+                        "o": 154.26026502839986,
+                        "h": 157.09652113646553,
+                        "l": 150.76676377717777,
+                        "c": 153.94085896470983
+                },
+                {
+                        "x": "2025-03-28",
+                        "o": 153.3813448479933,
+                        "h": 155.50599731651013,
+                        "l": 147.94910822594173,
+                        "c": 149.77551921539862
+                },
+                {
+                        "x": "2025-03-31",
+                        "o": 145.695108637962,
+                        "h": 149.85956668713487,
+                        "l": 142.66760725128327,
+                        "c": 149.06200903619677
+                },
+                {
+                        "x": "2025-04-01",
+                        "o": 148.67494230303512,
+                        "h": 151.56663046589503,
+                        "l": 146.2444467762506,
+                        "c": 150.639273219385
+                },
+                {
+                        "x": "2025-04-01",
+                        "o": 150.99994377845488,
+                        "h": 153.97816903695843,
+                        "l": 148.5528244235773,
+                        "c": 153.03455005685444
+                },
+                {
+                        "x": "2025-04-02",
+                        "o": 149.27641115940287,
+                        "h": 156.36050089758555,
+                        "l": 148.59411493238278,
+                        "c": 154.64222185719015
+                },
+                {
+                        "x": "2025-04-03",
+                        "o": 144.83026359333493,
+                        "h": 147.46496755497415,
+                        "l": 135.41887188566932,
+                        "c": 136.6275065201443
+                },
+                {
+                        "x": "2025-04-04",
+                        "o": 130.80493919517917,
+                        "h": 134.15414492789307,
+                        "l": 123.43872388841469,
+                        "c": 128.45924190380117
+                },
+                {
+                        "x": "2025-04-07",
+                        "o": 124.20657582259898,
+                        "h": 140.0331642541469,
+                        "l": 120.06830866229464,
+                        "c": 132.2682470453848
+                },
+                {
+                        "x": "2025-04-08",
+                        "o": 139.30654800419043,
+                        "h": 141.71237765407884,
+                        "l": 125.61380337499712,
+                        "c": 128.88796536517438
+                },
+                {
+                        "x": "2025-04-09",
+                        "o": 130.30291652548954,
+                        "h": 154.21545573777095,
+                        "l": 127.58417689459948,
+                        "c": 152.70531113315346
+                },
+                {
+                        "x": "2025-04-10",
+                        "o": 144.87482110762602,
+                        "h": 146.7066062951563,
+                        "l": 134.47204053792274,
+                        "c": 139.4564503643164
+                },
+                {
+                        "x": "2025-04-11",
+                        "o": 139.9789561857162,
+                        "h": 147.900733972013,
+                        "l": 137.3434828449784,
+                        "c": 146.8045971953302
+                },
+                {
+                        "x": "2025-04-14",
+                        "o": 152.3050602041568,
+                        "h": 152.80343118263488,
+                        "l": 144.58644717222026,
+                        "c": 146.65604961923586
+                },
+                {
+                        "x": "2025-04-15",
+                        "o": 147.59276003520952,
+                        "h": 150.26807049510236,
+                        "l": 145.63915095696044,
+                        "c": 147.27622183008376
+                },
+                {
+                        "x": "2025-04-16",
+                        "o": 141.30960561925903,
+                        "h": 145.0395024632261,
+                        "l": 137.5679713754649,
+                        "c": 142.818799496035
+                },
+                {
+                        "x": "2025-04-17",
+                        "o": 144.9713477883244,
+                        "h": 145.52970513086143,
+                        "l": 139.2567680869333,
+                        "c": 141.19297990903203
+                },
+                {
+                        "x": "2025-04-21",
+                        "o": 138.54817020980482,
+                        "h": 139.23213162292922,
+                        "l": 133.63617272825115,
+                        "c": 136.49084843934372
+                },
+                {
+                        "x": "2025-04-22",
+                        "o": 138.03040627083638,
+                        "h": 141.36879862367587,
+                        "l": 136.22069052167106,
+                        "c": 139.1470947273812
+                },
+                {
+                        "x": "2025-04-23",
+                        "o": 147.96305303888315,
+                        "h": 150.36779738885025,
+                        "l": 144.68368013508024,
+                        "c": 145.75845997439836
+                },
+                {
+                        "x": "2025-04-24",
+                        "o": 147.91259426261436,
+                        "h": 155.83376176991263,
+                        "l": 147.10034396853308,
+                        "c": 155.05561136497923
+                },
+                {
+                        "x": "2025-04-25",
+                        "o": 154.60612706492375,
+                        "h": 158.50642644775093,
+                        "l": 153.05978302711716,
+                        "c": 157.34737115886773
+                },
+                {
+                        "x": "2025-04-28",
+                        "o": 156.44949962823594,
+                        "h": 158.63094386491656,
+                        "l": 152.76223775617063,
+                        "c": 157.03770856011303
+                },
+                {
+                        "x": "2025-04-29",
+                        "o": 156.68872568596615,
+                        "h": 158.94925696075896,
+                        "l": 154.80959404076913,
+                        "c": 157.10090817404128
+                },
+                {
+                        "x": "2025-04-30",
+                        "o": 151.4916240328064,
+                        "h": 158.14841239721005,
+                        "l": 150.41387114523508,
+                        "c": 157.65177387686165
+                },
+                {
+                        "x": "2025-05-01",
+                        "o": 160.77279867983674,
+                        "h": 163.58785649103928,
+                        "l": 158.82619398039583,
+                        "c": 160.0925231145434
+                },
+                {
+                        "x": "2025-05-02",
+                        "o": 163.72164602993865,
+                        "h": 168.64343906878997,
+                        "l": 162.19711180622673,
+                        "c": 166.38490656629654
+                },
+                {
+                        "x": "2025-05-05",
+                        "o": 164.97532627428146,
+                        "h": 167.93867851319672,
+                        "l": 163.7584022756161,
+                        "c": 165.13962487612685
+                },
+                {
+                        "x": "2025-05-06",
+                        "o": 162.48836803925582,
+                        "h": 166.36163787371063,
+                        "l": 161.17407064597396,
+                        "c": 164.38314427536082
+                },
+                {
+                        "x": "2025-05-07",
+                        "o": 164.19684782873512,
+                        "h": 168.67409357767048,
+                        "l": 162.3671146101316,
+                        "c": 167.45604456109058
+                },
+                {
+                        "x": "2025-05-08",
+                        "o": 169.995199633215,
+                        "h": 172.01174173837316,
+                        "l": 166.2435688267057,
+                        "c": 168.955703932105
+                },
+                {
+                        "x": "2025-05-09",
+                        "o": 170.09640673444036,
+                        "h": 171.65409213851294,
+                        "l": 166.5237179090719,
+                        "c": 168.49073627687346
+                },
+                {
+                        "x": "2025-05-12",
+                        "o": 179.13931509750708,
+                        "h": 183.06064432235092,
+                        "l": 175.84757785068135,
+                        "c": 180.98572419537052
+                },
+                {
+                        "x": "2025-05-13",
+                        "o": 180.47159721054524,
+                        "h": 189.9456244495913,
+                        "l": 179.9202744060846,
+                        "c": 187.6450367471478
+                },
+                {
+                        "x": "2025-05-14",
+                        "o": 188.34310764830985,
+                        "h": 191.90971331900013,
+                        "l": 185.17320237582925,
+                        "c": 187.9020212062277
+                },
+                {
+                        "x": "2025-05-15",
+                        "o": 186.1110425082952,
+                        "h": 188.25549876122585,
+                        "l": 182.18346529599216,
+                        "c": 185.43096195745613
+                },
+                {
+                        "x": "2025-05-16",
+                        "o": 185.9817427972875,
+                        "h": 187.56076009094343,
+                        "l": 182.8007350752017,
+                        "c": 186.1581188742769
+                },
+                {
+                        "x": "2025-05-19",
+                        "o": 181.07908448674164,
+                        "h": 185.77714767843077,
+                        "l": 180.41017492118925,
+                        "c": 184.74559425271
+                },
+                {
+                        "x": "2025-05-20",
+                        "o": 183.18164998668436,
+                        "h": 185.3439720865704,
+                        "l": 182.05153481036635,
+                        "c": 184.683917802392
+                },
+                {
+                        "x": "2025-05-21",
+                        "o": 182.59397409169665,
+                        "h": 186.9699667463104,
+                        "l": 179.70506759519088,
+                        "c": 181.0329544222872
+                },
+                {
+                        "x": "2025-05-22",
+                        "o": 181.01921143025348,
+                        "h": 185.59930116536265,
+                        "l": 179.53468712712333,
+                        "c": 181.864071860645
+                },
+                {
+                        "x": "2025-05-23",
+                        "o": 177.48287127712277,
+                        "h": 181.974447063794,
+                        "l": 176.77387630960774,
+                        "c": 180.55537374449207
+                },
+                {
+                        "x": "2025-05-27",
+                        "o": 184.5134423524605,
+                        "h": 186.86845896882008,
+                        "l": 182.4015621793015,
+                        "c": 185.78685072547148
+                },
+                {
+                        "x": "2025-05-28",
+                        "o": 186.02887194065647,
+                        "h": 187.71455150930348,
+                        "l": 183.6134672474477,
+                        "c": 185.1863588067926
+                },
+                {
+                        "x": "2025-05-29",
+                        "o": 190.2958651893891,
+                        "h": 190.76890438509403,
+                        "l": 184.46434564144883,
+                        "c": 186.46552148472944
+                },
+                {
+                        "x": "2025-05-30",
+                        "o": 185.1654997901497,
+                        "h": 187.1073428080444,
+                        "l": 179.16240002590646,
+                        "c": 183.94958140754392
+                },
+                {
+                        "x": "2025-06-02",
+                        "o": 183.9725950994796,
+                        "h": 188.3502403793356,
+                        "l": 183.05187339341688,
+                        "c": 187.49004370648365
+                },
+                {
+                        "x": "2025-06-03",
+                        "o": 188.13412779824515,
+                        "h": 192.9937409236805,
+                        "l": 186.5028787240865,
+                        "c": 191.73899346435
+                },
+                {
+                        "x": "2025-06-04",
+                        "o": 193.0497217994608,
+                        "h": 198.01316968978244,
+                        "l": 191.76861612676328,
+                        "c": 193.83198090450813
+                },
+                {
+                        "x": "2025-06-05",
+                        "o": 194.86799028124744,
+                        "h": 197.25717161065728,
+                        "l": 190.4834623382832,
+                        "c": 192.0279284826494
+                },
+                {
+                        "x": "2025-06-06",
+                        "o": 193.2526958637645,
+                        "h": 195.61653893525676,
+                        "l": 190.4757629928822,
+                        "c": 192.15647624870937
+                },
+                {
+                        "x": "2025-06-09",
+                        "o": 193.06805413673573,
+                        "h": 196.2503288149464,
+                        "l": 190.6172387670096,
+                        "c": 193.71053529393944
+                },
+                {
+                        "x": "2025-06-10",
+                        "o": 194.17192960731472,
+                        "h": 198.2963765214921,
+                        "l": 191.8998116877639,
+                        "c": 196.30267731355457
+                },
+                {
+                        "x": "2025-06-11",
+                        "o": 197.4940486407728,
+                        "h": 200.1054461378388,
+                        "l": 193.20088793775085,
+                        "c": 196.6282369401241
+                },
+                {
+                        "x": "2025-06-12",
+                        "o": 194.98541112951136,
+                        "h": 199.2510377533248,
+                        "l": 194.2066618911937,
+                        "c": 196.995413154553
+                },
+                {
+                        "x": "2025-06-13",
+                        "o": 192.87747649205917,
+                        "h": 194.9551501441184,
+                        "l": 188.65970001327148,
+                        "c": 189.8910774970952
+                },
+                {
+                        "x": "2025-06-16",
+                        "o": 192.22613008281945,
+                        "h": 197.879448641931,
+                        "l": 191.5237546317033,
+                        "c": 195.4072895971541
+                },
+                {
+                        "x": "2025-06-17",
+                        "o": 194.2668094648373,
+                        "h": 196.98515339482293,
+                        "l": 192.2942876169997,
+                        "c": 193.16485778976144
+                },
+                {
+                        "x": "2025-06-18",
+                        "o": 193.65818267673373,
+                        "h": 197.22664014845788,
+                        "l": 191.6908942709328,
+                        "c": 194.108079215224
+                },
+                {
+                        "x": "2025-06-20",
+                        "o": 196.23709246244545,
+                        "h": 196.8852267300744,
+                        "l": 190.19738639283864,
+                        "c": 192.96526349602885
+                },
+                {
+                        "x": "2025-06-23",
+                        "o": 192.43685432136976,
+                        "h": 196.0846617998484,
+                        "l": 189.1419177435244,
+                        "c": 194.98927516445715
+                },
+                {
+                        "x": "2025-06-24",
+                        "o": 198.2881936186996,
+                        "h": 202.33923289336755,
+                        "l": 196.70317351233612,
+                        "c": 200.6372614225946
+                },
+                {
+                        "x": "2025-06-25",
+                        "o": 201.35215337572035,
+                        "h": 204.6453731074132,
+                        "l": 199.56773658776112,
+                        "c": 202.68668285675608
+                },
+                {
+                        "x": "2025-06-26",
+                        "o": 204.08277118601188,
+                        "h": 207.6616540386034,
+                        "l": 201.2335313764709,
+                        "c": 205.33844101603444
+                },
+                {
+                        "x": "2025-06-27",
+                        "o": 205.4159725070089,
+                        "h": 207.64923849141493,
+                        "l": 202.44255095827583,
+                        "c": 204.91227061819404
+                },
+                {
+                        "x": "2025-06-30",
+                        "o": 206.4915822752589,
+                        "h": 208.24952829748688,
+                        "l": 203.3892126990835,
+                        "c": 206.26339967689165
+                },
+                {
+                        "x": "2025-07-01",
+                        "o": 205.3435731826261,
+                        "h": 208.8484206935592,
+                        "l": 199.277551714928,
+                        "c": 203.77250857548867
+                },
+                {
+                        "x": "2025-07-01",
+                        "o": 206.88310060461825,
+                        "h": 210.48057398340345,
+                        "l": 200.86561080532533,
+                        "c": 205.41128296796808
+                },
+                {
+                        "x": "2025-07-02",
+                        "o": 204.48169297482627,
+                        "h": 210.31178064607653,
+                        "l": 202.6680078614848,
+                        "c": 208.707503348324
+                },
+                {
+                        "x": "2025-07-03",
+                        "o": 209.96455677824565,
+                        "h": 212.92026699718608,
+                        "l": 207.8831844900814,
+                        "c": 210.25620116240967
+                }
+        ],
+        "performance": {
+                "1D": 0.007420422309881976,
+                "1W": 0.03734590846801298,
+                "1M": 0.16142501144821822,
+                "3M": 0.20873192694825088,
+                "6M": -0.02032195844460635,
+                "1Y": 0,
+                "YTD": 0.2734807922953218,
+                "MTD": 0.007420422309881976,
+                "ALL": 0.07030644239176473
+        },
+        "priceLevels": {
+                "current": 210.25620116240967,
+                "ath": 223.9886551118849,
+                "atl": 128.45924190380117,
+                "distanceFromATH": -6.130870307969709,
+                "distanceFromATL": 63.675418013025094,
+                "athDate": "2024-10-14",
+                "atlDate": "2025-04-04"
+        },
+        "riskMetrics": {
+                "volatility1Y": 52.51100469341867,
+                "volatility3M": 53.95665127479884,
+                "maxDrawdown": -42.64921951532127,
+                "currentDrawdown": -6.130870307969683,
+                "sharpeRatio": 0.3897391828684183,
+                "maxDrawdownDate": "2025-04-04"
+        },
+        "holdings": [
+                {
+                        "symbol": "NVDA",
+                        "name": "NVIDIA Corporation",
+                        "weight": 14.002940381841059
+                },
+                {
+                        "symbol": "AVGO",
+                        "name": "Broadcom Inc.",
+                        "weight": 14.002940381841059
+                },
+                {
+                        "symbol": "MU",
+                        "name": "Micron Technology, Inc.",
+                        "weight": 14.000000000000002
+                },
+                {
+                        "symbol": "APH",
+                        "name": "Amphenol Corporation",
+                        "weight": 14.000000000000002
+                },
+                {
+                        "symbol": "MPWR",
+                        "name": "Monolithic Power Systems, Inc.",
+                        "weight": 10.591461172772005
+                },
+                {
+                        "symbol": "SMCI",
+                        "name": "Super Micro Computer, Inc.",
+                        "weight": 8.546495132059501
+                },
+                {
+                        "symbol": "IOT",
+                        "name": "Samsara Inc.",
+                        "weight": 6.663748797685663
+                },
+                {
+                        "symbol": "CYBR",
+                        "name": "CyberArk Software Ltd.",
+                        "weight": 5.913501743728025
+                },
+                {
+                        "symbol": "RBRK",
+                        "name": "RBRK",
+                        "weight": 4.908161775547574
+                },
+                {
+                        "symbol": "KVYO",
+                        "name": "Klaviyo, Inc.",
+                        "weight": 2.9795716383911617
+                }
+        ],
+        "portfolioManagement": {
+                "lastRebalanceDate": "2025-07-01",
+                "nextRebalanceDate": "2025-10-01",
+                "rebalanceFrequency": "Quarterly",
+                "daysUntilRebalance": 86,
+                "totalHoldings": 14,
+                "turnoverRate": 12.5,
+                "avgHoldingPeriod": "8.2 months"
+        },
+        "trendAnalysis": {
+                "currentTrend": "Breakout to New Highs",
+                "trendType": "bullish",
+                "trendStrength": "strong",
+                "trendDescription": "Breaking out 26.2% above previous peak of $166.54",
+                "lastPeak": {
+                        "price": 166.5433962746126,
+                        "date": "2025-03-20",
+                        "changePercent": 26.25,
+                        "daysSince": 105
+                },
+                "lastValley": {
+                        "price": 120.06830866229464,
+                        "date": "2025-04-07",
+                        "changePercent": 75.11,
+                        "daysSince": 87
+                },
+                "supportLevel": 147.42,
+                "resistanceLevel": 220.77
+        }
+};
+
+        // Initialize the dashboard
+        function initDashboard() {
+            updateTimestamp();
+            populatePerformanceMetrics();
+            populatePriceLevels();
+            populateRiskMetrics();
+            populateHoldings();
+            populatePortfolioInfo();
+            populateTrendAnalysis();
+            createTradingViewChart();
+        }
+
+        // Custom date formatter to display dates in "31 Dec 2025" format
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const day = date.getDate();
+            const month = months[date.getMonth()];
+            const year = date.getFullYear();
+            return `${day} ${month} ${year}`;
+        }
+
+        function updateTimestamp() {
+            const timestamp = new Date(sampleData.lastUpdate);
+            document.getElementById('lastUpdate').textContent =
+                `Last Update: ${formatDate(sampleData.lastUpdate)} ${timestamp.toLocaleTimeString()}`;
+        }
+
+        // Convert OHLC data to Chart.js format
+        function convertToChartJsFormat(priceData) {
+            return priceData.map(item => ({
+                x: item.x,
+                y: item.c // Use close price for line chart
+            }));
+        }
+
+        function createTradingViewChart() {
+            // Check if Chart.js is available
+            if (typeof Chart === 'undefined') {
+                console.error('Chart.js library is not loaded');
+                createFallbackChart();
+                return;
+            }
+
+            const chartData = convertToChartJsFormat(sampleData.priceData);
+
+            // Calculate average price for reference line
+            const avgPrice = sampleData.priceData.reduce((sum, item) => sum + item.c, 0) / sampleData.priceData.length;
+            const avgLineData = chartData.map(point => ({
+                x: point.x,
+                y: avgPrice
+            }));
+
+            const container = document.getElementById('candlestickChart');
+
+            // Clear any existing chart
+            container.innerHTML = '<canvas id="priceChart"></canvas>';
+
+            const ctx = document.getElementById('priceChart').getContext('2d');
+
+            // Create gradient for the line based on position relative to average
+            const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, '#00d084'); // Green at top
+            gradient.addColorStop(0.5, '#ffa502'); // Yellow in middle (around average)
+            gradient.addColorStop(1, '#ff4757'); // Red at bottom
+
+            // Create the chart
+            const chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    datasets: [{
+                        label: 'Halal Healthy Tech Index',
+                        data: chartData,
+                        segment: {
+                            borderColor: function (ctx) {
+                                const point = ctx.p1;
+                                return point.parsed.y >= avgPrice ? '#00d084' : '#ff4757';
+                            },
+                            backgroundColor: function (ctx) {
+                                const point = ctx.p1;
+                                return point.parsed.y >= avgPrice ? 'rgba(0, 208, 132, 0.1)' : 'rgba(255, 71, 87, 0.1)';
+                            }
+                        },
+                        borderWidth: 3,
+                        fill: false,
+                        tension: 0.1,
+                        pointBackgroundColor: function (context) {
+                            const point = context.parsed;
+                            return point.y >= avgPrice ? '#00d084' : '#ff4757';
+                        },
+                        pointBorderColor: function (context) {
+                            const point = context.parsed;
+                            return point.y >= avgPrice ? '#00d084' : '#ff4757';
+                        },
+                        pointRadius: 0,
+                        pointHoverRadius: 6,
+                        pointHoverBackgroundColor: function (context) {
+                            const point = context.parsed;
+                            return point.y >= avgPrice ? '#00d084' : '#ff4757';
+                        },
+                        pointHoverBorderColor: '#ffffff',
+                        pointHoverBorderWidth: 2
+                    }, {
+                        label: 'Average Price',
+                        data: avgLineData,
+                        borderColor: '#ffa502',
+                        backgroundColor: 'transparent',
+                        borderWidth: 2,
+                        borderDash: [5, 5],
+                        fill: false,
+                        tension: 0,
+                        pointRadius: 0,
+                        pointHoverRadius: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                color: '#b3b3b3',
+                                font: {
+                                    family: 'SF Mono, Monaco, monospace',
+                                    size: 11
+                                },
+                                usePointStyle: true,
+                                pointStyle: 'line'
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(26, 26, 26, 0.95)',
+                            titleColor: '#ffffff',
+                            bodyColor: '#b3b3b3',
+                            borderColor: '#333333',
+                            borderWidth: 1,
+                            cornerRadius: 8,
+                            displayColors: false,
+                            titleFont: {
+                                family: 'SF Mono, Monaco, monospace',
+                                size: 12
+                            },
+                            bodyFont: {
+                                family: 'SF Mono, Monaco, monospace',
+                                size: 11
+                            },
+                            callbacks: {
+                                title: function (context) {
+                                    return formatDate(context[0].parsed.x);
+                                },
+                                label: function (context) {
+                                    if (context.datasetIndex === 1) {
+                                        return `Average: $${context.parsed.y.toFixed(2)}`;
+                                    } else if (context.datasetIndex === 0) {
+                                        // Get the average price for comparison
+                                        const avgPrice = sampleData.priceData.reduce((sum, item) => sum + item.c, 0) / sampleData.priceData.length;
+                                        const trend = context.parsed.y >= avgPrice ? ' (Above Avg)' : ' (Below Avg)';
+                                        return `Price: $${context.parsed.y.toFixed(2)}${trend}`;
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                unit: 'day',
+                                displayFormats: {
+                                    day: 'MMM dd'
+                                }
+                            },
+                            grid: {
+                                color: '#333333',
+                                lineWidth: 1
+                            },
+                            ticks: {
+                                color: '#b3b3b3',
+                                font: {
+                                    family: 'SF Mono, Monaco, monospace',
+                                    size: 11
+                                },
+                                maxTicksLimit: 8
+                            },
+                            border: {
+                                color: '#333333'
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: '#333333',
+                                lineWidth: 1
+                            },
+                            ticks: {
+                                color: '#b3b3b3',
+                                font: {
+                                    family: 'SF Mono, Monaco, monospace',
+                                    size: 11
+                                },
+                                callback: function (value) {
+                                    return '$' + value.toFixed(0);
+                                }
+                            },
+                            border: {
+                                color: '#333333'
+                            }
+                        }
+                    },
+                    elements: {
+                        point: {
+                            radius: 0
+                        }
+                    }
+                }
+            });
+
+            return chart;
+        }
+
+        function populatePerformanceMetrics() {
+            const container = document.getElementById('performanceGrid');
+            container.innerHTML = '';
+
+            Object.entries(sampleData.performance).forEach(([period, change]) => {
+                const item = document.createElement('div');
+                item.className = 'performance-item';
+
+                const changePercent = change * 100;
+                const valueClass = changePercent > 0 ? 'positive' : changePercent < 0 ? 'negative' : 'neutral';
+
+                item.innerHTML = `
+                    <div class="performance-label">${period}</div>
+                    <div class="performance-value ${valueClass}">${changePercent > 0 ? '+' : ''}${changePercent.toFixed(2)}%</div>
+                `;
+
+                container.appendChild(item);
+            });
+        }
+
+        function populatePriceLevels() {
+            const container = document.getElementById('priceLevels');
+            const data = sampleData.priceLevels;
+
+            container.innerHTML = `
+                <div class="info-row">
+                    <span class="info-label">Current Price</span>
+                    <span class="info-value">$${data.current.toFixed(2)}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">All-Time High</span>
+                    <span class="info-value">$${data.ath.toFixed(2)} <span class="${data.distanceFromATH >= 0 ? 'positive' : 'negative'}">${data.distanceFromATH > 0 ? '+' : ''}${data.distanceFromATH.toFixed(1)}%</span></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">All-Time Low</span>
+                    <span class="info-value">$${data.atl.toFixed(2)} <span class="positive">+${data.distanceFromATL.toFixed(1)}%</span></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">ATH Date</span>
+                    <span class="info-value">${formatDate(data.athDate)}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">ATL Date</span>
+                    <span class="info-value">${formatDate(data.atlDate)}</span>
+                </div>
+            `;
+        }
+
+        function populateRiskMetrics() {
+            const container = document.getElementById('riskMetrics');
+            const data = sampleData.riskMetrics;
+
+            const getVolatilityLabel = (vol) => {
+                if (vol > 25) return 'High';
+                if (vol > 15) return 'Medium';
+                return 'Low';
+            };
+
+            container.innerHTML = `
+                <div class="info-row">
+                    <span class="info-label">1Y Volatility</span>
+                    <span class="info-value">${data.volatility1Y.toFixed(1)}% <small>(${getVolatilityLabel(data.volatility1Y)})</small></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">3M Volatility</span>
+                    <span class="info-value">${data.volatility3M.toFixed(1)}% <small>(${getVolatilityLabel(data.volatility3M)})</small></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Max Drawdown</span>
+                    <span class="info-value negative">${data.maxDrawdown.toFixed(1)}%</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Current Drawdown</span>
+                    <span class="info-value ${data.currentDrawdown >= 0 ? 'positive' : 'negative'}">${data.currentDrawdown.toFixed(1)}%</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Sharpe Ratio</span>
+                    <span class="info-value">${data.sharpeRatio.toFixed(2)}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Max DD Date</span>
+                </div>
+            `;
+        }
+
+        function populateHoldings() {
+            const container = document.getElementById('holdingsList');
+            const subtitleContainer = document.getElementById('holdingsSubtitle');
+            container.innerHTML = '';
+
+            // Populate the subtitle with last rebalance date info
+            const lastRebalanceDate = formatDate(sampleData.portfolioManagement.lastRebalanceDate);
+            subtitleContainer.innerHTML = `As of last rebalance: ${lastRebalanceDate} • Rebalanced quarterly`;
+
+            sampleData.holdings.forEach((holding) => {
+                const item = document.createElement('div');
+                item.className = 'holding-item';
+
+                item.innerHTML = `
+                    <div class="holding-info">
+                        <div class="holding-symbol">${holding.symbol}</div>
+                        <div class="holding-name">${holding.name}</div>
+                    </div>
+                    <div class="holding-weight">${holding.weight.toFixed(1)}%</div>
+                `;
+
+                container.appendChild(item);
+            });
+        }
+
+        function populatePortfolioInfo() {
+            const container = document.getElementById('portfolioInfo');
+            const data = sampleData.portfolioManagement;
+
+            const getRebalanceStatus = (daysUntil) => {
+                if (daysUntil < 7) return { class: 'due', text: 'Due Soon' };
+                if (daysUntil < 0) return { class: 'overdue', text: 'Overdue' };
+                return { class: 'recent', text: 'On Schedule' };
+            };
+
+            const rebalanceStatus = getRebalanceStatus(data.daysUntilRebalance);
+
+            container.innerHTML = `
+                <div class="info-row">
+                    <span class="info-label">Last Rebalance</span>
+                    <span class="info-value">${formatDate(data.lastRebalanceDate)}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Next Rebalance</span>
+                    <span class="info-value">${formatDate(data.nextRebalanceDate)}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Frequency</span>
+                    <span class="info-value">${data.rebalanceFrequency}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Status</span>
+                    <span class="info-value">
+                        <div class="rebalance-status">
+                            <div class="status-indicator ${rebalanceStatus.class}"></div>
+                            ${rebalanceStatus.text} (${data.daysUntilRebalance} days)
+                        </div>
+                    </span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Total Holdings</span>
+                    <span class="info-value">${data.totalHoldings}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Turnover Rate</span>
+                    <span class="info-value">${data.turnoverRate.toFixed(1)}%</span>
+                </div>
+            `;
+        }
+
+        function populateTrendAnalysis() {
+            const container = document.getElementById('trendAnalysis');
+            const trendData = sampleData.trendAnalysis;
+            const currentPrice = sampleData.currentPrice;
+
+            // Calculate percentage changes from current price
+            const peakChangePercent = ((currentPrice - trendData.lastPeak.price) / trendData.lastPeak.price * 100);
+            const valleyChangePercent = ((currentPrice - trendData.lastValley.price) / trendData.lastValley.price * 100);
+
+            // Determine trend status class
+            const getTrendStatusClass = (trend) => {
+                switch (trend.toLowerCase()) {
+                    case 'bullish':
+                    case 'uptrend':
+                        return 'bullish';
+                    case 'bearish':
+                    case 'downtrend':
+                        return 'bearish';
+                    default:
+                        return 'neutral';
+                }
+            };
+
+            const formatDaysAgo = (days) => {
+                if (days === 0) return 'Today';
+                if (days === 1) return '1 day ago';
+                return `${days} days ago`;
+            };
+
+            container.innerHTML = `
+                <div class="trend-card peak">
+                    <div class="trend-header">
+                        <div class="trend-title">
+                            <span class="trend-icon">📈</span>
+                            Last Peak
+                        </div>
+                        <div class="trend-badge peak">HIGH</div>
+                    </div>
+                    <div class="trend-price">$${trendData.lastPeak.price.toFixed(2)}</div>
+                    <div class="trend-details">
+                        <div class="trend-detail-row">
+                            <span class="trend-detail-label">Date</span>
+                            <span class="trend-detail-value">${formatDate(trendData.lastPeak.date)}</span>
+                        </div>
+                        <div class="trend-detail-row">
+                            <span class="trend-detail-label">Time Ago</span>
+                            <span class="trend-detail-value">${formatDaysAgo(trendData.lastPeak.daysSince)}</span>
+                        </div>
+                        <div class="trend-detail-row">
+                            <span class="trend-detail-label">vs Current</span>
+                            <span class="trend-detail-value trend-percentage ${peakChangePercent >= 0 ? 'positive' : 'negative'}">
+                                ${peakChangePercent >= 0 ? '+' : ''}${peakChangePercent.toFixed(1)}%
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="trend-card valley">
+                    <div class="trend-header">
+                        <div class="trend-title">
+                            <span class="trend-icon">📉</span>
+                            Last Valley
+                        </div>
+                        <div class="trend-badge valley">LOW</div>
+                    </div>
+                    <div class="trend-price">$${trendData.lastValley.price.toFixed(2)}</div>
+                    <div class="trend-details">
+                        <div class="trend-detail-row">
+                            <span class="trend-detail-label">Date</span>
+                            <span class="trend-detail-value">${formatDate(trendData.lastValley.date)}</span>
+                        </div>
+                        <div class="trend-detail-row">
+                            <span class="trend-detail-label">Time Ago</span>
+                            <span class="trend-detail-value">${formatDaysAgo(trendData.lastValley.daysSince)}</span>
+                        </div>
+                        <div class="trend-detail-row">
+                            <span class="trend-detail-label">vs Current</span>
+                            <span class="trend-detail-value trend-percentage ${valleyChangePercent >= 0 ? 'positive' : 'negative'}">
+                                ${valleyChangePercent >= 0 ? '+' : ''}${valleyChangePercent.toFixed(1)}%
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="trend-current-status">
+                    <div class="trend-status-title">Current Market Trend</div>
+                    <div class="trend-status-value ${getTrendStatusClass(trendData.currentTrend)}">
+                        ${trendData.currentTrend}
+                    </div>
+                </div>
+            `;
+        }
+
+        function createCandlestickChart() {
+            // Legacy Chart.js implementation - keeping as backup
+            const ctx = document.getElementById('candlestickChart').getContext('2d');
+
+            // Check if Chart.js is available
+            if (typeof Chart === 'undefined') {
+                console.error('Chart.js is not loaded');
+                createFallbackChart();
+                return;
+            }
+
+            // Convert OHLC data to simple chart data
+            const labels = sampleData.priceData.map(item => {
+                const date = new Date(item.x);
+                return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            });
+            const prices = sampleData.priceData.map(item => item.c);
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Halal Healthy Tech Index',
+                        data: prices,
+                        borderColor: '#00d084',
+                        backgroundColor: 'rgba(0, 208, 132, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.2,
+                        pointBackgroundColor: '#00d084',
+                        pointBorderColor: '#00d084',
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: '#1a1a1a',
+                            titleColor: '#ffffff',
+                            bodyColor: '#b3b3b3',
+                            borderColor: '#333333',
+                            borderWidth: 1,
+                            cornerRadius: 8,
+                            displayColors: false,
+                            callbacks: {
+                                label: function (context) {
+                                    return `Price: $${context.parsed.y.toFixed(2)}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: '#333333',
+                                lineWidth: 1
+                            },
+                            ticks: {
+                                color: '#b3b3b3',
+                                font: {
+                                    family: 'SF Mono, Monaco, monospace',
+                                    size: 11
+                                }
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: '#333333',
+                                lineWidth: 1
+                            },
+                            ticks: {
+                                color: '#b3b3b3',
+                                font: {
+                                    family: 'SF Mono, Monaco, monospace',
+                                    size: 11
+                                },
+                                callback: function (value) {
+                                    return '$' + value.toFixed(0);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function createFallbackChart() {
+            const container = document.getElementById('candlestickChart').parentElement;
+            const prices = sampleData.priceData.map(item => item.c);
+            const minPrice = Math.min(...prices);
+            const maxPrice = Math.max(...prices);
+            const priceRange = maxPrice - minPrice;
+
+            // Create a simple SVG chart as fallback
+            const svgChart = `
+                <svg width="100%" height="300" style="background: var(--chart-bg); border-radius: 8px;">
+                    <defs>
+                        <linearGradient id="priceGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" style="stop-color:#00d084;stop-opacity:0.3" />
+                            <stop offset="100%" style="stop-color:#00d084;stop-opacity:0.05" />
+                        </linearGradient>
+                    </defs>
+                    ${sampleData.priceData.map((item, index) => {
+                const x = (index / (sampleData.priceData.length - 1)) * 80 + 10; // 10% margin on each side
+                const y = 90 - ((item.c - minPrice) / priceRange) * 70; // 10% margin top/bottom, 70% chart height
+                return `<circle cx="${x}%" cy="${y}%" r="3" fill="#00d084"/>`;
+            }).join('')}
+                    <polyline fill="url(#priceGradient)" stroke="#00d084" stroke-width="2" points="${sampleData.priceData.map((item, index) => {
+                const x = (index / (sampleData.priceData.length - 1)) * 80 + 10;
+                const y = 90 - ((item.c - minPrice) / priceRange) * 70;
+                return `${x}%,${y}%`;
+            }).join(' ')
+                } ${90 + ((sampleData.priceData[sampleData.priceData.length - 1].c - minPrice) / priceRange) * 70}%,90% 10%,90%"/>
+                    <text x="10%" y="95%" fill="#b3b3b3" font-size="12" font-family="SF Mono, monospace">$${minPrice.toFixed(0)}</text>
+                    <text x="10%" y="15%" fill="#b3b3b3" font-size="12" font-family="SF Mono, monospace">$${maxPrice.toFixed(0)}</text>
+                    <text x="50%" y="50%" fill="#808080" font-size="14" text-anchor="middle" font-family="SF Mono, monospace">Fallback Chart - Chart.js failed to load</text>
+                </svg>
+            `;
+
+            container.innerHTML = `<h2 class="chart-title">Price Movement</h2>${svgChart}`;
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize other components first
+            updateTimestamp();
+            populatePerformanceMetrics();
+            populatePriceLevels();
+            populateRiskMetrics();
+            populateHoldings();
+            populatePortfolioInfo();
+            populateTrendAnalysis();
+
+            // Try to initialize chart
+            function tryInitChart() {
+                if (typeof Chart !== 'undefined') {
+                    createTradingViewChart();
+                } else {
+                    // Fallback to simple chart if Chart.js fails to load
+                    console.warn('Chart.js library not available, using fallback chart');
+                    createFallbackChart();
+                }
+            }
+
+            // Wait a bit for scripts to load, then try
+            setTimeout(tryInitChart, 500);
+        });
+
+        // Optional: Add auto-refresh functionality
+        // setInterval(() => {
+        //     // Fetch new data from API and update dashboard
+        //     // fetchDataFromAPI().then(data => updateDashboard(data));
+        // }, 60000); // Refresh every minute
+    </script>
+</body>
+
+</html>
