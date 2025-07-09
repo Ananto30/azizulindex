@@ -714,16 +714,9 @@
         // Sample data structure - replace this with your actual data or API call
         const sampleData = {
         "indexName": "Halal Healthy Tech",
-        "lastUpdate": "2025-07-09T09:01:33.138461+00:00",
-        "currentPrice": 209.84246084883733,
+        "lastUpdate": "2025-07-09T20:44:12.019108+00:00",
+        "currentPrice": 210.7935362368915,
         "priceData": [
-                {
-                        "x": "2024-10-16",
-                        "o": 218.38157189909492,
-                        "h": 220.049370269616,
-                        "l": 214.09787817336,
-                        "c": 217.6037539752659
-                },
                 {
                         "x": "2024-10-17",
                         "o": 224.05504591946155,
@@ -1976,49 +1969,56 @@
                         "h": 212.7670366992418,
                         "l": 207.1607039780649,
                         "c": 209.84246084883733
+                },
+                {
+                        "x": "2025-07-09",
+                        "o": 210.604682985189,
+                        "h": 215.06223297177996,
+                        "l": 206.31645586637407,
+                        "c": 210.7935362368915
                 }
         ],
         "performance": {
-                "1D": 0.010496363191186655,
-                "1W": 0.02201717738387925,
-                "1M": 0.15392152854428007,
-                "3M": 0.20644250668184952,
-                "6M": -0.022187309737468616,
+                "1D": 0.004532330512170668,
+                "1W": 0.02878384913408533,
+                "1M": 0.1675525602838999,
+                "3M": 0.3073558123210198,
+                "6M": -0.031296416601105576,
                 "1Y": 0,
-                "YTD": 0.27106329249474326,
-                "MTD": 0.005515244753289207,
-                "ALL": 0.06829407728285808
+                "YTD": 0.2768241714382173,
+                "MTD": 0.010072572177537296,
+                "ALL": 0.07313593912529838
         },
         "priceLevels": {
-                "current": 209.84246084883733,
+                "current": 210.7935362368915,
                 "ath": 223.97442888507825,
                 "atl": 128.45072154857658,
-                "distanceFromATH": -6.309634589353975,
-                "distanceFromATL": 63.36417446240705,
+                "distanceFromATH": -5.884998887506885,
+                "distanceFromATL": 64.10459489491859,
                 "athDate": "2024-10-14",
                 "atlDate": "2025-04-04"
         },
         "riskMetrics": {
-                "volatility1Y": 52.122280770724316,
-                "volatility3M": 52.265933038116295,
+                "volatility1Y": 52.12149453791377,
+                "volatility3M": 52.090576540214386,
                 "downsideDeviation": 41.278151857525394,
                 "maxDrawdown": -42.649380919066964,
-                "currentDrawdown": -6.30963458935399,
-                "avgDrawdown": -17.689949617903636,
+                "currentDrawdown": -5.8849988875068915,
+                "avgDrawdown": -17.640762323193652,
                 "maxDrawdownDate": "2025-04-04",
                 "avgDrawdownDuration": 18.333333333333332,
-                "sharpeRatio": 0.38605314563160015,
-                "sortinoRatio": 0.030610449489087026,
-                "calmarRatio": 0.47030271968980336,
-                "var95": -5.564307562725025,
-                "var99": -9.949154255032285,
+                "sharpeRatio": 0.39392596152803105,
+                "sortinoRatio": 0.031173944550675015,
+                "calmarRatio": 0.478960327285245,
+                "var95": -5.532485598671373,
+                "var99": -9.922362953150166,
                 "cvar95": -8.463359798929226,
                 "cvar99": -11.62108396022446,
-                "winRate": 55.118110236220474,
-                "gainPainRatio": 1.0735037885653131,
-                "skewness": -0.05242920374314583,
-                "kurtosis": 5.439891701170672,
-                "annualReturn": 20.0581198393236
+                "winRate": 55.294117647058826,
+                "gainPainRatio": 1.0751516014682323,
+                "skewness": -0.05387739425808152,
+                "kurtosis": 5.471965647500278,
+                "annualReturn": 20.427361443509398
         },
         "holdings": [
                 {
@@ -2082,24 +2082,24 @@
                 "avgHoldingPeriod": "8.2 months"
         },
         "trendAnalysis": {
-                "currentTrend": "Mixed Signals",
-                "trendType": "neutral",
-                "trendStrength": "weak",
-                "trendDescription": "Trend direction unclear, mixed signals from price action",
+                "currentTrend": "Breakout to New Highs",
+                "trendType": "bullish",
+                "trendStrength": "strong",
+                "trendDescription": "Breaking out 26.6% above previous peak of $166.53",
                 "lastPeak": {
-                        "price": 212.9039908833045,
-                        "date": "2025-07-03",
-                        "changePercent": -1.44,
-                        "daysSince": 5
+                        "price": 166.52963035122667,
+                        "date": "2025-03-20",
+                        "changePercent": 26.58,
+                        "daysSince": 111
                 },
                 "lastValley": {
                         "price": 120.06020683456764,
                         "date": "2025-04-07",
-                        "changePercent": 74.78,
-                        "daysSince": 92
+                        "changePercent": 75.57,
+                        "daysSince": 93
                 },
                 "supportLevel": 147.41,
-                "resistanceLevel": 220.33
+                "resistanceLevel": 221.33
         }
 };
 
@@ -2298,7 +2298,7 @@
 
             // Populate the subtitle with last rebalance date info
             const lastRebalanceDate = formatDate(sampleData.portfolioManagement.lastRebalanceDate);
-            subtitleContainer.innerHTML = `As of last rebalance: ${lastRebalanceDate} • Rebalanced quarterly`;
+            subtitleContainer.innerHTML = `As of last rebalance: ${lastRebalanceDate} • Holdings and tickers are subject to change`;
 
             sampleData.holdings.forEach((holding) => {
                 const item = document.createElement('div');
