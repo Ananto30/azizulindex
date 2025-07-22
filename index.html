@@ -640,7 +640,7 @@
         <div class="main-grid">
             <!-- Chart Section -->
             <div class="chart-container">
-                <h3 class="chart-title">Price Movement</h3>
+                <h3 class="chart-title">Price Movement (Last 6 months)</h3>
                 <div id="candlestickChart"></div>
             </div>
         </div>
@@ -709,30 +709,9 @@
         // Sample data structure - replace this with your actual data or API call
         const sampleData = {
         "indexName": "Halal Healthy Tech",
-        "lastUpdate": "2025-07-18T11:18:09.161154+00:00",
-        "currentPrice": 207.3685127402508,
+        "lastUpdate": "2025-07-22T13:47:20.837536+00:00",
+        "currentPrice": 206.15563889814132,
         "priceData": [
-                {
-                        "x": "2024-10-25",
-                        "o": 217.99332324430628,
-                        "h": 222.45811285902644,
-                        "l": 216.69159315288584,
-                        "c": 217.09294660740832
-                },
-                {
-                        "x": "2024-10-28",
-                        "o": 217.51974186015275,
-                        "h": 219.50591164236508,
-                        "l": 214.04802815066972,
-                        "c": 214.9939721425766
-                },
-                {
-                        "x": "2024-10-29",
-                        "o": 215.68978238077344,
-                        "h": 223.81560508996532,
-                        "l": 214.26177776902864,
-                        "c": 222.6095615896832
-                },
                 {
                         "x": "2024-10-30",
                         "o": 217.72751618501084,
@@ -1971,49 +1950,70 @@
                         "h": 208.9241238046597,
                         "l": 203.75104198474665,
                         "c": 207.3685127402508
+                },
+                {
+                        "x": "2025-07-18",
+                        "o": 208.5985239595255,
+                        "h": 210.2020752773296,
+                        "l": 205.2888512605108,
+                        "c": 208.5967171070681
+                },
+                {
+                        "x": "2025-07-21",
+                        "o": 209.03120422826385,
+                        "h": 211.9420941471704,
+                        "l": 207.5682062419041,
+                        "c": 208.8481158500689
+                },
+                {
+                        "x": "2025-07-22",
+                        "o": 208.567633612347,
+                        "h": 209.5429567753118,
+                        "l": 205.5857237412669,
+                        "c": 206.15563889814132
                 }
         ],
         "performance": {
-                "1D": 0.0051577713108569715,
-                "1W": -0.011789549639187087,
-                "1M": 0.08159049328674065,
-                "3M": 0.33442151616702553,
-                "6M": -0.042108528542011595,
-                "1Y": 0.07792908274582425,
-                "YTD": 0.2560780287133279,
-                "MTD": -0.00633932713768905,
-                "ALL": 0.05569937122948226
+                "1D": -0.012892033720143739,
+                "1W": -0.0036941310578006226,
+                "1M": 0.07293273565611323,
+                "3M": 0.32749928663407274,
+                "6M": -0.0739138183195831,
+                "1Y": 0.04111959095128657,
+                "YTD": 0.24873137726396774,
+                "MTD": -0.012151130589051058,
+                "ALL": 0.049524710787665224
         },
         "priceLevels": {
-                "current": 207.3685127402508,
+                "current": 206.15563889814132,
                 "ath": 223.97442888507825,
                 "atl": 128.45072154857658,
-                "distanceFromATH": -7.414201803076365,
-                "distanceFromATL": 61.43818441831769,
+                "distanceFromATH": -7.955725158285723,
+                "distanceFromATL": 60.49395162033313,
                 "athDate": "2024-10-14",
                 "atlDate": "2025-04-04"
         },
         "riskMetrics": {
-                "volatility1Y": 51.978407425587626,
-                "volatility3M": 31.251509022856666,
-                "downsideDeviation": 40.88580300149947,
+                "volatility1Y": 51.421147334302496,
+                "volatility3M": 29.36898401335497,
+                "downsideDeviation": 40.74177249841565,
                 "maxDrawdown": -42.649380919066964,
-                "currentDrawdown": -7.414201803076409,
-                "avgDrawdown": -17.399384885267782,
+                "currentDrawdown": -7.955725158285776,
+                "avgDrawdown": -17.276400923307225,
                 "maxDrawdownDate": "2025-04-04",
                 "avgDrawdownDuration": 18.333333333333332,
-                "sharpeRatio": 0.3586348976079155,
-                "sortinoRatio": 0.028345033217172484,
-                "calmarRatio": 0.4313571895242418,
-                "var95": -5.3415538143494645,
-                "var99": -9.761615141857442,
+                "sharpeRatio": 0.3456765026076834,
+                "sortinoRatio": 0.027271284713775126,
+                "calmarRatio": 0.413554790267599,
+                "var95": -5.27969364907711,
+                "var99": -9.681241236211081,
                 "cvar95": -8.24037365717353,
                 "cvar99": -11.62108396022446,
-                "winRate": 54.78927203065134,
-                "gainPainRatio": 1.0685403737665256,
-                "skewness": -0.047399597185713294,
-                "kurtosis": 5.639252976400082,
-                "annualReturn": 18.39711708819755
+                "winRate": 54.92424242424242,
+                "gainPainRatio": 1.0661601596163237,
+                "skewness": -0.04505404722175348,
+                "kurtosis": 5.723667239828371,
+                "annualReturn": 17.637855781027678
         },
         "holdings": [
                 {
@@ -2071,7 +2071,7 @@
                 "lastRebalanceDate": "2025-07-01",
                 "nextRebalanceDate": "2025-09-30",
                 "rebalanceFrequency": "Quarterly",
-                "daysUntilRebalance": 74,
+                "daysUntilRebalance": 70,
                 "totalHoldings": 14,
                 "turnoverRate": 12.5,
                 "avgHoldingPeriod": "8.2 months"
@@ -2080,21 +2080,21 @@
                 "currentTrend": "Decline from Peak",
                 "trendType": "bearish",
                 "trendStrength": "weak",
-                "trendDescription": "Declining 3.6% from recent peak",
+                "trendDescription": "Declining 4.1% from recent peak",
                 "lastPeak": {
                         "price": 215.06495090749968,
                         "date": "2025-07-09",
-                        "changePercent": -3.58,
-                        "daysSince": 8
+                        "changePercent": -4.14,
+                        "daysSince": 13
                 },
                 "lastValley": {
                         "price": 120.06020683456764,
                         "date": "2025-04-07",
-                        "changePercent": 72.72,
-                        "daysSince": 101
+                        "changePercent": 71.71,
+                        "daysSince": 106
                 },
                 "supportLevel": 147.41,
-                "resistanceLevel": 217.74
+                "resistanceLevel": 216.46
         }
 };
 
