@@ -350,6 +350,12 @@
             border-bottom: none;
         }
 
+        .info-note {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+
         .info-label {
             color: var(--text-secondary);
             font-weight: 500;
@@ -709,16 +715,9 @@
         // Sample data structure - replace this with your actual data or API call
         const sampleData = {
         "indexName": "Halal Healthy Tech",
-        "lastUpdate": "2025-08-04T20:00:14.953060+00:00",
-        "currentPrice": 226.70995546808103,
+        "lastUpdate": "2025-08-05T20:00:12.217036+00:00",
+        "currentPrice": 222.0634910029597,
         "priceData": [
-                {
-                        "x": "2024-11-12",
-                        "o": 184.80011733170087,
-                        "h": 189.4901503035631,
-                        "l": 178.1503759178992,
-                        "c": 181.6297684632316
-                },
                 {
                         "x": "2024-11-13",
                         "o": 179.96329906355317,
@@ -1967,53 +1966,60 @@
                 },
                 {
                         "x": "2025-08-04",
-                        "o": 220.7019872563169,
-                        "h": 227.4705049532856,
-                        "l": 218.20299618629227,
-                        "c": 226.70995546808103
+                        "o": 220.6738383808824,
+                        "h": 227.5021608492293,
+                        "l": 218.2016988718467,
+                        "c": 226.62195570857864
+                },
+                {
+                        "x": "2025-08-05",
+                        "o": 226.828208136757,
+                        "h": 228.44951920801475,
+                        "l": 217.81215905718864,
+                        "c": 222.0634910029597
                 }
         ],
         "performance": {
-                "1D": 0.03848188454146637,
-                "1W": 0.08572130946409812,
-                "1M": 0.17497352318139717,
-                "3M": 0.38780171213658693,
-                "6M": 0.2397314238035094,
-                "1Y": 0.31274890860716414,
-                "YTD": 0.37323352610784216,
-                "MTD": 0,
-                "ALL": 0.15416537581532744
+                "1D": -0.020114841438756446,
+                "1W": 0.059677893339161875,
+                "1M": 0.13894364619864386,
+                "3M": 0.42284318463008935,
+                "6M": 0.22261616519052776,
+                "1Y": 0.28584386536424056,
+                "YTD": 0.345088838909614,
+                "MTD": -0.020114841438756446,
+                "ALL": 0.130510532804455
         },
         "priceLevels": {
-                "current": 226.70995546808103,
-                "ath": 226.70995546808103,
+                "current": 222.0634910029597,
+                "ath": 226.62195570857864,
                 "atl": 128.45072154857658,
-                "distanceFromATH": 0.0,
-                "distanceFromATL": 76.49566521301749,
+                "distanceFromATH": -2.0114841438756446,
+                "distanceFromATL": 72.87835235630132,
                 "athDate": "2025-08-04",
                 "atlDate": "2025-04-04"
         },
         "riskMetrics": {
-                "volatility1Y": 49.92194429643158,
-                "volatility3M": 26.693590058045537,
-                "downsideDeviation": 40.6194322986628,
+                "volatility1Y": 49.35066825087444,
+                "volatility3M": 27.031721345202993,
+                "downsideDeviation": 40.45175403523559,
                 "maxDrawdown": -42.64938091906696,
-                "currentDrawdown": 0.0,
-                "avgDrawdown": -16.844681381772485,
+                "currentDrawdown": -2.0114841438756375,
+                "avgDrawdown": -16.787188369222502,
                 "maxDrawdownDate": "2025-04-04",
                 "avgDrawdownDuration": 63.5,
-                "sharpeRatio": 0.5148286791438564,
-                "sortinoRatio": 0.04032550423566469,
-                "calmarRatio": 0.6096789417915185,
-                "var95": -5.0941131532600465,
-                "var99": -9.440119519271997,
+                "sharpeRatio": 0.4761019198911529,
+                "sortinoRatio": 0.037406237836909446,
+                "calmarRatio": 0.563208145995687,
+                "var95": -5.073493098169262,
+                "var99": -9.413328217389877,
                 "cvar95": -8.24037365717353,
                 "cvar99": -11.62108396022446,
-                "winRate": 56.41025641025641,
-                "gainPainRatio": 1.0998460952744382,
-                "skewness": -0.07004477695713436,
-                "kurtosis": 5.794909881697986,
-                "annualReturn": 26.002429426800123
+                "winRate": 56.20437956204379,
+                "gainPainRatio": 1.0919181611716169,
+                "skewness": -0.06381428599952252,
+                "kurtosis": 5.799846532602441,
+                "annualReturn": 24.02047875529153
         },
         "holdings": [
                 {
@@ -2071,7 +2077,7 @@
                 "lastRebalanceDate": "2025-07-01",
                 "nextRebalanceDate": "2025-09-30",
                 "rebalanceFrequency": "Quarterly",
-                "daysUntilRebalance": 57,
+                "daysUntilRebalance": 56,
                 "totalHoldings": 14,
                 "turnoverRate": 12.5,
                 "avgHoldingPeriod": "8.2 months"
@@ -2080,21 +2086,21 @@
                 "currentTrend": "Breakout to New Highs",
                 "trendType": "bullish",
                 "trendStrength": "strong",
-                "trendDescription": "Breaking out 36.1% above previous peak of $166.53",
+                "trendDescription": "Breaking out 33.3% above previous peak of $166.53",
                 "lastPeak": {
                         "price": 166.52963035122667,
                         "date": "2025-03-20",
-                        "changePercent": 36.14,
-                        "daysSince": 137
+                        "changePercent": 33.35,
+                        "daysSince": 138
                 },
                 "lastValley": {
                         "price": 120.0602068345676,
                         "date": "2025-04-07",
-                        "changePercent": 88.83,
-                        "daysSince": 119
+                        "changePercent": 84.96,
+                        "daysSince": 120
                 },
                 "supportLevel": 147.41,
-                "resistanceLevel": 238.05
+                "resistanceLevel": 233.17
         }
 };
 
@@ -2186,14 +2192,17 @@
                         <span class="info-label">1Y Volatility</span>
                         <span class="info-value">${data.volatility1Y.toFixed(1)}% <small>(${getVolatilityLabel(data.volatility1Y)})</small></span>
                     </div>
+                    <div class="info-note">Measures price fluctuation over 1 year. Higher volatility means higher risk and potential reward.</div>
                     <div class="info-row">
                         <span class="info-label">3M Volatility</span>
                         <span class="info-value">${data.volatility3M.toFixed(1)}% <small>(${getVolatilityLabel(data.volatility3M)})</small></span>
                     </div>
+                    <div class="info-note">Shows recent (3 months) price swings. Useful for short-term risk assessment.</div>
                     <div class="info-row">
                         <span class="info-label">Downside Deviation</span>
                         <span class="info-value">${data.downsideDeviation.toFixed(1)}%</span>
                     </div>
+                    <div class="info-note">Focuses on negative volatility (losses), highlighting risk of downside moves.</div>
                 </div>
 
                 <div class="risk-section">
@@ -2202,18 +2211,22 @@
                         <span class="info-label">Max Drawdown</span>
                         <span class="info-value negative">${data.maxDrawdown.toFixed(1)}%</span>
                     </div>
+                    <div class="info-note">Largest observed loss from a peak to a trough. Indicates worst-case loss scenario.</div>
                     <div class="info-row">
                         <span class="info-label">Current Drawdown</span>
                         <span class="info-value ${data.currentDrawdown >= 0 ? 'positive' : 'negative'}">${data.currentDrawdown.toFixed(1)}%</span>
                     </div>
+                    <div class="info-note">Shows how far the current value is below its recent peak. Useful for timing entries/exits.</div>
                     <div class="info-row">
                         <span class="info-label">Avg Drawdown</span>
                         <span class="info-value negative">${data.avgDrawdown.toFixed(1)}%</span>
                     </div>
+                    <div class="info-note">Average size of all drawdowns. Indicates typical loss during downturns.</div>
                     <div class="info-row">
                         <span class="info-label">Avg DD Duration</span>
                         <span class="info-value">${data.avgDrawdownDuration.toFixed(0)} days</span>
                     </div>
+                    <div class="info-note">Average time to recover from drawdowns. Shorter is generally better.</div>
                 </div>
 
                 <div class="risk-section">
@@ -2222,18 +2235,22 @@
                         <span class="info-label">Sharpe Ratio</span>
                         <span class="info-value">${data.sharpeRatio.toFixed(2)} <small>(${getRiskAdjustedLabel(data.sharpeRatio)})</small></span>
                     </div>
+                    <div class="info-note">Measures return per unit of total risk. Higher is better for risk-adjusted performance.</div>
                     <div class="info-row">
                         <span class="info-label">Sortino Ratio</span>
                         <span class="info-value">${data.sortinoRatio.toFixed(2)} <small>(${getRiskAdjustedLabel(data.sortinoRatio)})</small></span>
                     </div>
+                    <div class="info-note">Like Sharpe, but only penalizes downside risk. Useful for investors more concerned with losses.</div>
                     <div class="info-row">
                         <span class="info-label">Calmar Ratio</span>
                         <span class="info-value">${data.calmarRatio.toFixed(2)} <small>(${getRiskAdjustedLabel(data.calmarRatio)})</small></span>
                     </div>
+                    <div class="info-note">Annual return divided by max drawdown. Shows reward relative to worst loss.</div>
                     <div class="info-row">
                         <span class="info-label">Annual Return</span>
                         <span class="info-value positive">${data.annualReturn.toFixed(1)}%</span>
                     </div>
+                    <div class="info-note">Average yearly gain. Indicates long-term growth potential.</div>
                 </div>
 
                 <div class="risk-section">
@@ -2242,10 +2259,12 @@
                         <span class="info-label">Win Rate</span>
                         <span class="info-value">${data.winRate.toFixed(1)}%</span>
                     </div>
+                    <div class="info-note">Percentage of profitable trades or periods. Higher win rate can mean more consistent results.</div>
                     <div class="info-row">
                         <span class="info-label">Gain/Pain Ratio</span>
                         <span class="info-value">${data.gainPainRatio.toFixed(2)}</span>
                     </div>
+                    <div class="info-note">Compares total gains to total losses. Higher values indicate better risk/reward balance.</div>
                 </div>
 
                 <div class="risk-section">
@@ -2254,18 +2273,22 @@
                         <span class="info-label">VaR 95%</span>
                         <span class="info-value negative">${data.var95.toFixed(1)}%</span>
                     </div>
+                    <div class="info-note">Maximum expected loss with 95% confidence over a period. Used for risk management.</div>
                     <div class="info-row">
                         <span class="info-label">VaR 99%</span>
                         <span class="info-value negative">${data.var99.toFixed(1)}%</span>
                     </div>
+                    <div class="info-note">Stricter version of VaR (99% confidence). Shows potential for rare, extreme losses.</div>
                     <div class="info-row">
                         <span class="info-label">CVaR 95%</span>
                         <span class="info-value negative">${data.cvar95.toFixed(1)}%</span>
                     </div>
+                    <div class="info-note">Average loss in the worst 5% of cases. Highlights tail risk beyond VaR.</div>
                     <div class="info-row">
                         <span class="info-label">CVaR 99%</span>
                         <span class="info-value negative">${data.cvar99.toFixed(1)}%</span>
                     </div>
+                    <div class="info-note">Average loss in the worst 1% of cases. Useful for stress-testing portfolios.</div>
                 </div>
 
                 <div class="risk-section">
@@ -2274,14 +2297,17 @@
                         <span class="info-label">Skewness</span>
                         <span class="info-value">${data.skewness.toFixed(3)}</span>
                     </div>
+                    <div class="info-note">Indicates asymmetry of returns. Positive skew means more large gains, negative means more large losses.</div>
                     <div class="info-row">
                         <span class="info-label">Kurtosis</span>
                         <span class="info-value">${data.kurtosis.toFixed(2)}</span>
                     </div>
+                    <div class="info-note">Measures fat tails/extreme events. High kurtosis means more risk of outlier moves.</div>
                     <div class="info-row">
                         <span class="info-label">Max DD Date</span>
                         <span class="info-value">${data.maxDrawdownDate}</span>
                     </div>
+                    <div class="info-note">Date when the largest drawdown occurred. Useful for historical context.</div>
                 </div>
             `;
         }
