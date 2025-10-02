@@ -673,7 +673,7 @@
 
             <!-- Holdings Distribution -->
             <div class="metric-card span-2">
-                <h3 class="metric-header">🏢 Top Holdings</h3>
+                <h3 class="metric-header">🏢 Holdings</h3>
                 <div class="holdings-subtitle" id="holdingsSubtitle">
                     <!-- Holdings subtitle will be populated by JavaScript -->
                 </div>
@@ -717,16 +717,9 @@
         // Sample data structure - replace this with your actual data or API call
         const sampleData = {
         "indexName": "Healthy Tech",
-        "lastUpdate": "2025-10-02T13:07:25.849975+00:00",
-        "currentPrice": 261.7572,
+        "lastUpdate": "2025-10-02T20:00:25.509427+00:00",
+        "currentPrice": 264.874,
         "priceData": [
-                {
-                        "x": "2025-01-14",
-                        "o": 174.4289,
-                        "h": 176.2395,
-                        "l": 170.7921,
-                        "c": 173.3847
-                },
                 {
                         "x": "2025-01-15",
                         "o": 177.3128,
@@ -1979,49 +1972,56 @@
                         "h": 263.3885,
                         "l": 253.2669,
                         "c": 261.7572
+                },
+                {
+                        "x": "2025-10-02",
+                        "o": 265.1963,
+                        "h": 268.6697,
+                        "l": 260.8978,
+                        "c": 264.874
                 }
         ],
         "performance": {
-                "1D": 0.0,
-                "1W": -0.00565592424731079,
-                "1M": 0.1201672052308124,
-                "3M": 0.40242523149425585,
-                "6M": 0.5170812565202273,
-                "1Y": 0.2921999673194709,
-                "YTD": 0.5046933068139032,
+                "1D": 0.011907217833931644,
+                "1W": 0.013370612504744056,
+                "1M": 0.14873078592781594,
+                "3M": 0.4294094378345534,
+                "6M": 0.5276665126738403,
+                "1Y": 0.2829331826017379,
+                "YTD": 0.5226100177913954,
                 "MTD": 0,
-                "ALL": 0.3325886993477495
+                "ALL": 0.3484561232739188
         },
         "priceLevels": {
-                "current": 261.7572,
-                "ath": 263.2461,
+                "current": 264.874,
+                "ath": 264.874,
                 "atl": 131.8373,
-                "distanceFromATH": -0.565592424731079,
-                "distanceFromATL": 98.54563162322046,
-                "athDate": "2025-09-22",
+                "distanceFromATH": 0.0,
+                "distanceFromATL": 100.90975770893368,
+                "athDate": "2025-10-02",
                 "atlDate": "2025-04-04"
         },
         "riskMetrics": {
-                "volatility1Y": 45.030347815485044,
-                "volatility3M": 22.2984843682857,
+                "volatility1Y": 45.042110349224714,
+                "volatility3M": 22.351670288661527,
                 "downsideDeviation": 38.21114335744159,
                 "maxDrawdown": -39.454936310193204,
-                "currentDrawdown": -0.5655924247310771,
+                "currentDrawdown": 0.0,
                 "avgDrawdown": -12.630485919761108,
                 "maxDrawdownDate": "2025-04-04",
-                "avgDrawdownDuration": 33.75,
-                "sharpeRatio": 0.7249584635769374,
-                "sortinoRatio": 0.05630299381214379,
-                "calmarRatio": 0.8656063723310389,
-                "var95": -4.528306424372917,
-                "var99": -8.688137238797657,
+                "avgDrawdownDuration": 30.666666666666668,
+                "sharpeRatio": 0.7439135022369647,
+                "sortinoRatio": 0.0576946530497324,
+                "calmarRatio": 0.8870018439144739,
+                "var95": -4.5260783194164755,
+                "var99": -8.68799769155172,
                 "cvar95": -7.6208978761442,
                 "cvar99": -10.88831017917048,
-                "winRate": 54.45859872611465,
-                "gainPainRatio": 1.1467393677897453,
-                "skewness": -0.04206718856902736,
-                "kurtosis": 6.936538908860774,
-                "annualReturn": 34.15244429001852
+                "winRate": 54.6031746031746,
+                "gainPainRatio": 1.1508452458157048,
+                "skewness": -0.04537612804890871,
+                "kurtosis": 6.960066928364386,
+                "annualReturn": 34.9966012586695
         },
         "holdings": [
                 {
@@ -2073,6 +2073,46 @@
                         "symbol": "CYBR",
                         "name": "CyberArk Software Ltd.",
                         "weight": 3.871555564918641
+                },
+                {
+                        "symbol": "IOT",
+                        "name": "Samsara Inc.",
+                        "weight": 3.412661059084759
+                },
+                {
+                        "symbol": "RBRK",
+                        "name": "RBRK",
+                        "weight": 2.538221169157197
+                },
+                {
+                        "symbol": "RMBS",
+                        "name": "Rambus Inc.",
+                        "weight": 1.7364413946045951
+                },
+                {
+                        "symbol": "KVYO",
+                        "name": "Klaviyo, Inc.",
+                        "weight": 1.4870632108002442
+                },
+                {
+                        "symbol": "LIF",
+                        "name": "Life360, Inc.",
+                        "weight": 1.2877071946903385
+                },
+                {
+                        "symbol": "ZETA",
+                        "name": "Zeta Global Holdings Corp.",
+                        "weight": 0.7704731081155634
+                },
+                {
+                        "symbol": "AMBA",
+                        "name": "Ambarella, Inc.",
+                        "weight": 0.5683150984920764
+                },
+                {
+                        "symbol": "INOD",
+                        "name": "Innodata Inc.",
+                        "weight": 0.4104041431968253
                 }
         ],
         "portfolioManagement": {
@@ -2085,24 +2125,24 @@
                 "avgHoldingPeriod": "8.2 months"
         },
         "trendAnalysis": {
-                "currentTrend": "Mixed Signals",
-                "trendType": "neutral",
-                "trendStrength": "weak",
-                "trendDescription": "Trend direction unclear, mixed signals from price action",
+                "currentTrend": "Breakout to New Highs",
+                "trendType": "bullish",
+                "trendStrength": "strong",
+                "trendDescription": "Breaking out 50.9% above previous peak of $175.48",
                 "lastPeak": {
-                        "price": 267.0281,
-                        "date": "2025-09-22",
-                        "changePercent": -1.97,
-                        "daysSince": 9
+                        "price": 175.4753,
+                        "date": "2025-03-20",
+                        "changePercent": 50.95,
+                        "daysSince": 196
                 },
                 "lastValley": {
                         "price": 123.2256,
                         "date": "2025-04-07",
-                        "changePercent": 112.42,
-                        "daysSince": 177
+                        "changePercent": 114.95,
+                        "daysSince": 178
                 },
                 "supportLevel": 149.78,
-                "resistanceLevel": 274.85
+                "resistanceLevel": 278.12
         }
 };
 
